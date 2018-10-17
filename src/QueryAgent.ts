@@ -11,7 +11,6 @@ import { AzureFileHandler } from "@bentley/imodeljs-clients/lib/imodelhub/AzureF
 import { ChangeOpCode } from "@bentley/imodeljs-common";
 import { IModelHost, IModelHostConfiguration, IModelDb } from "@bentley/imodeljs-backend";
 import { QueryAgentConfig } from "./QueryAgentConfig";
-import { Config } from "@bentley/imodeljs-clients";
 import { OidcAgentClient } from "@bentley/imodeljs-clients-backend/lib/OidcAgentClient";
 import * as fs from "fs";
 import * as path from "path";
@@ -34,17 +33,13 @@ export class QueryAgent {
         private _changeSummaryExtractor: ChangeSummaryExtractor = new ChangeSummaryExtractor(),
         private _oidcClient?: OidcAgentClient) {
 
+        QueryAgentConfig.setupConfig();
+
         Logger.initializeToConsole();
         Logger.setLevelDefault(LogLevel.Error);
         Logger.setLevel(QueryAgentConfig.loggingCategory, LogLevel.Trace);
-        // Bypass SSL certificate validation for DEV and PERF
-        if (QueryAgentConfig.buddiRegion === "103" || QueryAgentConfig.buddiRegion === "294") {
-            process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-            Logger.logTrace(QueryAgentConfig.loggingCategory, "Setting NODE_TLS_REJECT_UNAUTHORIZED = 0");
-        }
 
         // Following must be done before calling any API in imodeljs
-        Config.App.merge(QueryAgentConfig.iModelJsAppConfig);
         if (!this._oidcClient)
             this._oidcClient = new OidcAgentClient(QueryAgentConfig.oidcAgentClientConfiguration);
         // Startup IModel Host if we need to

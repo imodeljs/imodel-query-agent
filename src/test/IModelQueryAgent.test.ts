@@ -16,13 +16,16 @@ import * as express from "express";
 import * as request from "supertest";
 import * as path from "path";
 import { Config } from "@bentley/imodeljs-clients";
+
 function ensureEmailAndPassword() {
     if (!(process.env.service_user_email && process.env.service_user_password)) {
         process.env.service_user_email = "fake@email.com";
         process.env.service_user_password = "fake_password";
     }
 }
-Config.App.merge(QueryAgentConfig.iModelJsAppConfig);
+
+QueryAgentConfig.setupConfig();
+
 // Unit Tests
 describe("QueryAgent", () => {
     let agent: QueryAgent;
@@ -172,7 +175,7 @@ describe("IModelQueryAgent Running with Changesets (#integration)", () => {
     let changesetHarness: ChangesetGenerationHarness;
     let agentWebServer: QueryAgentWebServer;
     before(async () => {
-        Config.App.merge(QueryAgentConfig.iModelJsAppConfig);
+
         // Set up changeset generation harness and agent web server
         changesetHarness = new ChangesetGenerationHarness(undefined, undefined, QueryAgentConfig.outputDir);
         // initialize iModel in the hub before listening for changesets on it
