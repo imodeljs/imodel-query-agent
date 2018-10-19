@@ -5,17 +5,30 @@
 
 import { BriefcaseProvider } from "../BriefcaseProvider";
 import { QueryAgentWebServer } from "../QueryAgentWebServer";
-import { QueryAgentConfig } from "../QueryAgentConfig";
 import { ChangeSummaryExtractor } from "../ChangeSummaryExtractor";
-import { AccessToken, IModelHubClient, EventSubscription, IModelHubEvent, Version, EventHandler, EventSubscriptionHandler, ConnectClient, Project, IModelHandler, HubIModel} from "@bentley/imodeljs-clients";
+import { AccessToken, IModelHubClient, EventSubscription, IModelHubEvent, EventHandler, EventSubscriptionHandler, ConnectClient, Project, IModelHandler, HubIModel} from "@bentley/imodeljs-clients";
 import { IModelDb } from "@bentley/imodeljs-backend/lib/backend";
 import * as TypeMoq from "typemoq";
 import * as express from "express";
-import { HubUtility } from "@bentley/imodel-changeset-test-utility";
 import { OidcAgentClient } from "@bentley/imodeljs-clients-backend/lib/OidcAgentClient";
 import * as http from "http";
+import { Config } from "@bentley/imodeljs-clients";
 /** Static test mock objects */
 export class TestMockObjects {
+    public static setupMockAppConfig() {
+        Config.App.merge({
+            imjs_agent_client_id: "FAKE_CLIENT_ID",
+            imjs_agent_client_secret: "FAKE_CLIENT_SECRET",
+            imjs_agent_service_user_email: "FAKE_USER_EMAIL",
+            imjs_agent_service_user_password: "FAKE_USER_PASS",
+            imjs_agent_project_name: "FAKE_PROJECT_NAME",
+            imjs_agent_imodel_name: "FAKE_IMODEL_NAME",
+            agent_app_port: 3000,
+            agent_app_listen_time: 20,
+            imjs_buddi_resolve_url_using_region: "103",
+            imjs_default_relying_party_uri: "https://fake.com",
+        });
+    }
     public static readonly fakeAccessToken: string = "FAKE_ACCESS_TOKEN";
     public static getMockChangeSummaryExtractor(): ChangeSummaryExtractor {
         const mockExtractor = TypeMoq.Mock.ofType<ChangeSummaryExtractor>();
@@ -57,20 +70,7 @@ export class TestMockObjects {
             mockOidcAgentClient.setup((_) => _.getToken(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(async () => this.getFakeAccessToken());
         return mockOidcAgentClient.object;
     }
-    public static getMockHubUtility(throwsError = false): HubUtility {
-        const mockHubUtility: TypeMoq.IMock<HubUtility> = TypeMoq.Mock.ofType2(HubUtility, [new QueryAgentConfig()]);
-        mockHubUtility.setup((_) => _.createNamedVersion(TypeMoq.It.isAny(), TypeMoq.It.isAnyString(),
-            TypeMoq.It.isAnyString(), TypeMoq.It.isAnyString())).returns(async () => new Version());
-        if (throwsError)
-            mockHubUtility.setup((_) => _.login()).throws(new Error("MOCK Login failure"));
-        else
-            mockHubUtility.setup((_) => _.login()).returns(async () => this.getFakeAccessToken());
-        mockHubUtility.setup((_) => _.queryProjectIdByName(TypeMoq.It.isAny(), TypeMoq.It.isAnyString())).returns(async () => {
-            return this.getFakeProjectId();
-        });
-        mockHubUtility.setup((_) => _.getHubClient()).returns(() => this.getMockHubClient());
-        return mockHubUtility.object;
-    }
+
     public static getMockIModelDb(): IModelDb {
         const mockIModelDb = TypeMoq.Mock.ofType<IModelDb>();
         return mockIModelDb.object;

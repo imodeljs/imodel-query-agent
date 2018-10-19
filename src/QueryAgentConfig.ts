@@ -34,8 +34,8 @@ export class QueryAgentConfig {
             // -----------------------------------------------------------------------------------------------------------
             // Other application settings (NOT REQUIRED)
             // -----------------------------------------------------------------------------------------------------------
-            agent_app_port: 3000,
-            agent_app_listen_time: 40000,
+            agent_app_port: process.env.AGENT_APP_PORT || 3000,
+            agent_app_listen_time: process.env.AGENT_APP_LISTEN_TIME || 40000,
             imjs_buddi_resolve_url_using_region: process.env.IMJS_BUDDI_RESOLVE_URL_USING_REGION,
             imjs_default_relying_party_uri: "https://connect-wsg20.bentley.com",
         });

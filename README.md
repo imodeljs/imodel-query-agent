@@ -25,7 +25,7 @@ See http://imodeljs.org for comprehensive documentation on the iModel.js API and
 
 4. Build the source with `npm run build`
 
-5. (Optional) Follow the Development Setup process to setup the [imodel-changeset-test-utility](https://github.com/imodeljs/imodel-query-agent/blob/master/README.md). The utility can be used to generate and push sample change sets to the iModelHub that can then be consumed by this sample.
+5. (Optional) Follow the Development Setup process to setup the [imodel-changeset-test-utility](https://github.com/imodeljs/imodel-changeset-test-utility/blob/master/README.md). The utility can be used to generate and push sample change sets to the iModelHub that can then be consumed by this sample.
 
 ## Run Query Agent
 
@@ -37,7 +37,7 @@ See http://imodeljs.org for comprehensive documentation on the iModel.js API and
   * Extract Change Summary information from the Change Set.
   * Dump the contents of the Change Summary as a JSON file to disk.
 
-2. (Optional) Immediately start the imodel-changeset-test-utility to generate and push change sets by following the procedure documented in it's [README](https://github.com/imodeljs/imodel-query-agent/blob/master/README.md).
+2. (Optional) Immediately start the imodel-changeset-test-utility to generate and push change sets by following the procedure documented in it's [README](https://github.com/imodeljs/imodel-changeset-test-utility/blob/master/README.md).
 
 ## Run automated tests
 

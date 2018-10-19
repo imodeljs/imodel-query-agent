@@ -15,25 +15,11 @@ import { ChangeSummaryExtractor } from "../ChangeSummaryExtractor";
 import * as express from "express";
 import * as request from "supertest";
 import * as path from "path";
-import { Config } from "@bentley/imodeljs-clients";
 
-function ensureEmailAndPassword() {
-    if (!(process.env.service_user_email && process.env.service_user_password)) {
-        process.env.service_user_email = "fake@email.com";
-        process.env.service_user_password = "fake_password";
-    }
-}
-
-QueryAgentConfig.setupConfig();
-
+TestMockObjects.setupMockAppConfig();
 // Unit Tests
 describe("QueryAgent", () => {
     let agent: QueryAgent;
-    before(() => {
-        ensureEmailAndPassword();
-    });
-    after(() => {
-    });
     it("Extracts changeset information published to an iModel", async () => {
         agent = new QueryAgent(TestMockObjects.getMockHubClient(), TestMockObjects.getMockConnectClient(), TestMockObjects.getMockBriefcaseProvider(),
             TestMockObjects.getMockChangeSummaryExtractor(), TestMockObjects.getMockOidcAgentClient());
@@ -52,28 +38,6 @@ describe("QueryAgent", () => {
     });
 });
 describe("QueryAgentConfig", () => {
-    /*
-    const testEmail = "QueryAgentConfig@email.com";
-    const testPassword = "QueryAgentConfig_password";
-
-    let configEmail: string;
-    let configPassword: string;
-    beforeEach(() => {
-        configEmail = process.env.service_user_email!;
-        configPassword = process.env.service_user_password!;
-
-    });
-    afterEach(() => {
-        process.env.service_user_email = configEmail;
-        process.env.service_user_password = configPassword;
-    });
-
-    it("Uses npm config environment variables if no cli args are provided", () => {
-
-        expect(QueryAgentConfig.oidcUserCredentials.email).equals(testEmail);
-        expect(QueryAgentConfig.oidcUserCredentials.password).equals(testPassword);
-    });*/
-
     it("Uses __dirname/output as default output directory", () => {
         expect(QueryAgentConfig.outputDir).equals(path.join(__dirname, "../", "output"));
     });
@@ -81,11 +45,7 @@ describe("QueryAgentConfig", () => {
 
 describe("QueryAgentWebServer", () => {
     let agentWebServer: QueryAgentWebServer;
-    let actualListenTime: string;
     before(() => {
-        actualListenTime = Config.App.get("agent_app_listen_time");
-        Config.App.set("agent_app_listen_time", "20");
-        ensureEmailAndPassword();
         const agent: QueryAgent = new QueryAgent(TestMockObjects.getMockHubClient(), TestMockObjects.getMockConnectClient(), TestMockObjects.getMockBriefcaseProvider(),
             TestMockObjects.getMockChangeSummaryExtractor(), TestMockObjects.getMockOidcAgentClient());
         const webServer: express.Express = TestMockObjects.getMockExpressWebServer();
@@ -93,12 +53,11 @@ describe("QueryAgentWebServer", () => {
     });
     after(() => {
         Logger.logTrace(QueryAgentConfig.loggingCategory, "Cleaning up test resources, may take some time...");
-        Config.App.set("agent_app_listen_time", actualListenTime);
         if (agentWebServer)
             agentWebServer.close();
     });
     it("Extracts changeset information published to an iModel", async () => {
-        const listened = await agentWebServer.run();
+        const listened = await agentWebServer.run(10);
         expect(listened).equals(true);
     });
     it("Returns false when listen for changesets routine throws error", async () => {
@@ -142,18 +101,14 @@ describe("ChangeSummaryExtractor", () => {
         expect(ret).equals(undefined);
     });
 });
-
+QueryAgentConfig.setupConfig();
 // Basic Code Level Integration Tests
 describe("IModelQueryAgentWebServer (#integration)", () => {
     let agentWebServer: QueryAgentWebServer;
-    let actualListenTime: string;
     before(async () => {
-        actualListenTime = Config.App.get("agent_app_listen_time");
-        Config.App.set("agent_app_listen_time", "20");
         agentWebServer = new QueryAgentWebServer();
     });
     after(() => {
-        Config.App.set("agent_app_listen_time", actualListenTime);
         agentWebServer.close();
     });
     it("Web server responds to '/' and '/ping'", async () => {
@@ -166,7 +121,7 @@ describe("IModelQueryAgentWebServer (#integration)", () => {
     });
 
     it("Extracts changeset information published to an iModel", async () => {
-        const listened = await agentWebServer.run();
+        const listened = await agentWebServer.run(10);
         expect(listened).equals(true);
     });
 });
@@ -194,19 +149,10 @@ describe("IModelQueryAgent Running with Changesets (#integration)", () => {
         expect(listened).equals(true);
     });
 });
-describe("Main (#integration)", () => {
-    let actualListenTime: string;
-    before(() => {
-        actualListenTime = Config.App.get("agent_app_listen_time");
-        Config.App.set("agent_app_listen_time", "20");
-    });
-    after(() => {
-        Config.App.set("agent_app_listen_time", actualListenTime);
-        Logger.logTrace(QueryAgentConfig.loggingCategory, "Cleaning up test resources, may take some time...");
-    });
 
+describe("Main (#integration)", () => {
     it("Runs the Query Agent Web Server when invoked", async () => {
         // Use mock process to avoid exiting the test process
-        await main(TestMockObjects.getMockProcess());
+        await main(TestMockObjects.getMockProcess(), new QueryAgentWebServer(), 10);
     });
 });

@@ -15,11 +15,12 @@ class ProcessHandler {
 // Create Query Agent Web Server
 export const main = async (_process: NodeJS.Process,
     queryAgentWebServer: QueryAgentWebServer = new QueryAgentWebServer(),
+    listenTime?: number,
     ): Promise<void> => {
     const processHandler: ProcessHandler = new ProcessHandler(_process);
     let success = false;
     try {
-        success = await queryAgentWebServer.run();
+        success = await queryAgentWebServer.run(listenTime);
     } catch (error) {
         Logger.logTrace(QueryAgentConfig.loggingCategory, `Query Agent Web Server exiting with error: ${error}`);
         queryAgentWebServer.close();

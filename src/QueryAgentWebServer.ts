@@ -44,10 +44,10 @@ export class QueryAgentWebServer {
     public getServer(): http.Server {
         return this._server!;
     }
-    public async run(): Promise<boolean> {
+    public async run(listenTime?: number): Promise<boolean> {
         // Initialize the iModelJS backend sitting behind this web server
         try {
-            await this._agent.listenForAndHandleChangesets(QueryAgentConfig.listenTime);
+            await this._agent.listenForAndHandleChangesets(listenTime || QueryAgentConfig.listenTime);
         } catch (error) {
             this.close();
             return false;
