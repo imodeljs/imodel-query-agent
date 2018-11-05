@@ -29,6 +29,20 @@ export class TestMockObjects {
             imjs_default_relying_party_uri: "https://fake.com",
         });
     }
+
+    public static clearMockAppConfig() {
+        Config.App.remove("imjs_agent_client_id");
+        Config.App.remove("imjs_agent_client_secret");
+        Config.App.remove("imjs_agent_service_user_email");
+        Config.App.remove("imjs_agent_service_user_password");
+        Config.App.remove("imjs_agent_project_name");
+        Config.App.remove("imjs_agent_imodel_name");
+        Config.App.remove("agent_app_port");
+        Config.App.remove("agent_app_listen_time");
+        Config.App.remove("imjs_buddi_resolve_url_using_region");
+        Config.App.remove("imjs_default_relying_party_uri");
+    }
+
     public static readonly fakeAccessToken: string = "FAKE_ACCESS_TOKEN";
     public static getMockChangeSummaryExtractor(): ChangeSummaryExtractor {
         const mockExtractor = TypeMoq.Mock.ofType<ChangeSummaryExtractor>();

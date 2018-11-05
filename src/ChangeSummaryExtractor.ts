@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { QueryAgentConfig } from "./QueryAgentConfig";
-import { Logger, DbResult, assert, Id64, ActivityLoggingContext, Guid } from "@bentley/bentleyjs-core";
+import { Logger, DbResult, assert, Id64String, ActivityLoggingContext, Guid } from "@bentley/bentleyjs-core";
 import { ChangedValueState, ChangeOpCode } from "@bentley/imodeljs-common";
 import { ChangeSummaryManager, ECSqlStatement, ChangeSummary, IModelDb } from "@bentley/imodeljs-backend";
 import { AccessToken } from "@bentley/imodeljs-clients";
@@ -13,7 +13,7 @@ export class ChangeSummaryExtractor {
         try {
             const actLogCtx = new ActivityLoggingContext(Guid.createValue());
             // Extract summary information about the current version of the briefcase/iModel into the change cache
-            const changeSummaryIds: Id64[] = await ChangeSummaryManager.extractChangeSummaries(actLogCtx, accessToken!, iModelDb!, { currentVersionOnly: true });
+            const changeSummaryIds: Id64String[] = await ChangeSummaryManager.extractChangeSummaries(actLogCtx, accessToken!, iModelDb!, { currentVersionOnly: true });
             Logger.logTrace(QueryAgentConfig.loggingCategory, `Extracted summary information from change set "${changeSetId}"`);
 
             // Attach a change cache file to the iModel to enable querying the change summary
@@ -38,7 +38,7 @@ export class ChangeSummaryExtractor {
                 while (stmt.step() === DbResult.BE_SQLITE_ROW) {
                     const row = stmt.getRow();
 
-                    const instanceChange: any = ChangeSummaryManager.queryInstanceChange(iModelDb!, new Id64(row.id));
+                    const instanceChange: any = ChangeSummaryManager.queryInstanceChange(iModelDb!, row.id);
                     switch (instanceChange.opCode) {
                         case ChangeOpCode.Insert: {
                             // Get the instance after the insert

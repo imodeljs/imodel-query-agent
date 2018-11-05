@@ -13,26 +13,30 @@ export class QueryAgentConfig {
 
     public static setupConfig() {
         Config.App.merge({
+
             // -----------------------------------------------------------------------------------------------------------
             // Client registration details (REQUIRED)
-            // Must set these variables before testing - cCreate a client registration using
-            // the procedure here - https://git.io/fx8YP (Developer registration)
+            // Must set these variables before testing - create a client registration using
+            // the developer registration procedure here - https://git.io/fx8YP.
+            // Note: These can be set in the environment also - e.g., "set ims_agent_client_id=agent_test_client"
             // -----------------------------------------------------------------------------------------------------------
-            imjs_agent_client_id: process.env.IMJS_AGENT_CLIENT_ID, // Set this to the client id
-            imjs_agent_client_secret: process.env.IMJS_AGENT_CLIENT_SECRET, // Set this to the client secret
-            imjs_agent_service_user_email: process.env.IMJS_AGENT_SERVICE_USER_EMAIL, // Set this to the name of the service user
-            imjs_agent_service_user_password: process.env.IMJS_AGENT_SERVICE_USER_PASSWORD, // Set this to the path of the service user
+            // imjs_agent_client_id: "Set this to client id",
+            // imjs_agent_client_secret: "Set this to the client secret",
+            // imjs_agent_service_user_email: "Set this to the email of the service user",
+            // imjs_agent_service_user_password: "Set this to the password of the service user"
 
             // -----------------------------------------------------------------------------------------------------------
             // Test project and iModel (REQUIRED)
             // Must set these variables before testing - create a new project and iModel with the
             // developer registration procedure here - https://git.io/fx8YP
+            // Note: These can be set in the environment also - e.g., "set imjs_agent_project_name=MyProject"
             // -----------------------------------------------------------------------------------------------------------
-            imjs_agent_project_name: process.env.IMJS_AGENT_PROJECT_NAME, // Set this to the name of the sample project
-            imjs_agent_imodel_name: process.env.IMJS_AGENT_IMODEL_NAME, // Set this to the name of the sample iModel
+            // imjs_agent_project_name: "Set this to the name of the sample project"
+            // imjs_agent_imodel_name: "Set this to the name of the sample iModel"
 
             // -----------------------------------------------------------------------------------------------------------
             // Other application settings (NOT REQUIRED)
+            // Note: These can be set in the environment also - e.g., "set agent_app_port=3000"
             // -----------------------------------------------------------------------------------------------------------
             agent_app_port: process.env.AGENT_APP_PORT || 3000,
             agent_app_listen_time: process.env.AGENT_APP_LISTEN_TIME || 40000,
