@@ -5,7 +5,7 @@
 
 import * as path from "path";
 import { Config } from "@bentley/imodeljs-clients";
-import { OidcAgentClientConfiguration } from "@bentley/imodeljs-clients-backend/lib/OidcAgentClient";
+import { OidcAgentClientConfiguration } from "@bentley/imodeljs-clients-backend";
 
 /* Configuration for Query Agent: uses provided command if necessary first, second it will attempt to look
    for the npm config generated environment variable, third it will use hard coded values. */

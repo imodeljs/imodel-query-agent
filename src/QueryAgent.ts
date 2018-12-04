@@ -11,14 +11,14 @@ import { AzureFileHandler } from "@bentley/imodeljs-clients/lib/imodelhub/AzureF
 import { ChangeOpCode } from "@bentley/imodeljs-common";
 import { IModelHost, IModelHostConfiguration, IModelDb } from "@bentley/imodeljs-backend";
 import { QueryAgentConfig } from "./QueryAgentConfig";
-import { OidcAgentClient } from "@bentley/imodeljs-clients-backend/lib/OidcAgentClient";
+import { OidcAgentClient } from "@bentley/imodeljs-clients-backend";
 import * as fs from "fs";
 import * as path from "path";
 
 const actx = new ActivityLoggingContext("");
 
 /** Sleep for ms */
-const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const pause = async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 /** Agent for querying changesets. Contains backend iModelJs engine. */
 export class QueryAgent {
     private _accessToken?: AccessToken;
@@ -60,8 +60,8 @@ export class QueryAgent {
         // Subscribe to change set and named version events
         Logger.logTrace(QueryAgentConfig.loggingCategory, "Setting up changeset and named version listeners...");
         const actCtx = new ActivityLoggingContext(Guid.createValue());
-        const changeSetSubscription = await this._hubClient!.Events().Subscriptions().create(actCtx, this._accessToken!, this._iModelId!, ["ChangeSetPostPushEvent"]);
-        const deleteChangeSetListener = this._hubClient!.Events().createListener(actCtx, async () => this._accessToken!, changeSetSubscription!.wsgId, this._iModelId!,
+        const changeSetSubscription = await this._hubClient!.events.subscriptions.create(actCtx, this._accessToken!, this._iModelId!, ["ChangeSetPostPushEvent"]);
+        const deleteChangeSetListener = this._hubClient!.events.createListener(actCtx, async () => this._accessToken!, changeSetSubscription!.wsgId, this._iModelId!,
             async (receivedEvent: ChangeSetPostPushEvent) => {
             Logger.logTrace(QueryAgentConfig.loggingCategory, `Received notification that change set "${receivedEvent.changeSetId}" was just posted on the Hub`);
             try {
@@ -70,8 +70,8 @@ export class QueryAgent {
                 Logger.logError(QueryAgentConfig.loggingCategory, `Unable to extract changeset: ${receivedEvent.changeSetId}, failed with ${error}`);
             }
         });
-        const namedVersionSubscription = await this._hubClient!.Events().Subscriptions().create(actCtx, this._accessToken!, this._iModelId!, ["VersionEvent"]);
-        const deleteNamedVersionListener = this._hubClient!.Events().createListener(actCtx, async () => this._accessToken!, namedVersionSubscription!.wsgId, this._iModelId!,
+        const namedVersionSubscription = await this._hubClient!.events.subscriptions.create(actCtx, this._accessToken!, this._iModelId!, ["VersionEvent"]);
+        const deleteNamedVersionListener = this._hubClient!.events.createListener(actCtx, async () => this._accessToken!, namedVersionSubscription!.wsgId, this._iModelId!,
             async (receivedEvent: NamedVersionCreatedEvent) => {
                 Logger.logTrace(QueryAgentConfig.loggingCategory, `Received notification that named version "${receivedEvent.versionName}" was just created on the Hub`);
             });
@@ -104,7 +104,7 @@ export class QueryAgent {
                         $filter: "Name+eq+'" + QueryAgentConfig.projectName + "'",
                     }))!.wsgId;
                     Logger.logTrace(QueryAgentConfig.loggingCategory, `Project ${QueryAgentConfig.projectName} has id: ${projectId}`);
-                    const iModels = await this._hubClient.IModels().get(actx, this._accessToken, projectId, new IModelQuery().byName(QueryAgentConfig.iModelName));
+                    const iModels = await this._hubClient.iModels.get(actx, this._accessToken, projectId, new IModelQuery().byName(QueryAgentConfig.iModelName));
                     if (iModels.length === 1)
                         iModelId = iModels[0].wsgId;
                 } catch (error) {
@@ -146,7 +146,7 @@ export class QueryAgent {
 
     /** Write the change summary contents as JSON to disk */
     private _writeChangeSummaryToDisk(content: any) {
-        const filePath = path.join(QueryAgentConfig.changeSummaryDir, `${content.id.value}.json`);
+        const filePath = path.join(QueryAgentConfig.changeSummaryDir, `${content.id}.json`);
 
         // Dump the change summary
         fs.writeFileSync(filePath, JSON.stringify(content, (name, value) => {

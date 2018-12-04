@@ -171,7 +171,17 @@ describe("IModelQueryAgentWebServer (#integration)", () => {
         expect(listened).equals(true);
     });
 });
+describe("Main (#integration)", () => {
+    before(async () => {
+        (Config.App as any).appendSystemVars();
+        QueryAgentConfig.setupConfig();
+    });
 
+    it("Runs the Query Agent Web Server when invoked", async () => {
+        // Use mock process to avoid exiting the test process
+        await main(TestMockObjects.getMockProcess(), new QueryAgentWebServer(), 10);
+    });
+});
 describe("IModelQueryAgent Running with Changesets (#integration)", () => {
     let changesetHarness: ChangesetGenerationHarness;
     let agentWebServer: QueryAgentWebServer;
@@ -198,17 +208,5 @@ describe("IModelQueryAgent Running with Changesets (#integration)", () => {
         const [changesetGenerated, listened] = await Promise.all([changesetHarness.generateChangesets(changesetSequence), agentWebServer.run()]);
         expect(changesetGenerated).equals(true);
         expect(listened).equals(true);
-    });
-});
-
-describe("Main (#integration)", () => {
-    before(async () => {
-        (Config.App as any).appendSystemVars();
-        QueryAgentConfig.setupConfig();
-    });
-
-    it("Runs the Query Agent Web Server when invoked", async () => {
-        // Use mock process to avoid exiting the test process
-        await main(TestMockObjects.getMockProcess(), new QueryAgentWebServer(), 10);
     });
 });

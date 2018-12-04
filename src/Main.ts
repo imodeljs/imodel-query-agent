@@ -36,4 +36,7 @@ export const main = async (_process: NodeJS.Process,
     processHandler.exitWithError();
 };
 // Invoke main if Main.js is being run directly
-if (require.main === module) { main(process); }
+if (require.main === module) {
+    // tslint:disable-next-line:no-floating-promises
+    main(process);
+}
