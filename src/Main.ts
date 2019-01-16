@@ -1,11 +1,11 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2018 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-
 import { QueryAgentWebServer } from "./QueryAgentWebServer";
 import { QueryAgentConfig } from "./QueryAgentConfig";
-import { Logger } from "@bentley/bentleyjs-core/lib/bentleyjs-core";
+import { RequestHost } from "@bentley/imodeljs-clients-backend";
+import { Logger } from "@bentley/bentleyjs-core";
 
 class ProcessHandler {
     constructor(private _process: NodeJS.Process) {}
@@ -13,11 +13,13 @@ class ProcessHandler {
     public exitWithError() { this._process.exit(1); }
 }
 // Create Query Agent Web Server
-export const main = async (_process: NodeJS.Process,
-    queryAgentWebServer: QueryAgentWebServer = new QueryAgentWebServer(),
-    listenTime?: number,
+export const main = async (_process: NodeJS.Process, queryAgentWebServer?: QueryAgentWebServer, listenTime?: number,
     ): Promise<void> => {
     const processHandler: ProcessHandler = new ProcessHandler(_process);
+    // Initialize basic settings for all backend HTTP requests
+    await RequestHost.initialize();
+    if (!queryAgentWebServer)
+        queryAgentWebServer = new QueryAgentWebServer();
     let success = false;
     try {
         success = await queryAgentWebServer.run(listenTime);

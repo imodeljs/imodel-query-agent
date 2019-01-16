@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2018 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 
@@ -7,7 +7,7 @@ import { BriefcaseProvider } from "../BriefcaseProvider";
 import { QueryAgentWebServer } from "../QueryAgentWebServer";
 import { ChangeSummaryExtractor } from "../ChangeSummaryExtractor";
 import { AccessToken, IModelHubClient, EventSubscription, IModelHubEvent, EventHandler, EventSubscriptionHandler, ConnectClient, Project, IModelsHandler, HubIModel} from "@bentley/imodeljs-clients";
-import { IModelDb } from "@bentley/imodeljs-backend/lib/backend";
+import { IModelDb } from "@bentley/imodeljs-backend";
 import * as TypeMoq from "typemoq";
 import * as express from "express";
 import { OidcAgentClient } from "@bentley/imodeljs-clients-backend";
@@ -79,9 +79,9 @@ export class TestMockObjects {
     public static getMockOidcAgentClient(throwsError = false): OidcAgentClient {
         const mockOidcAgentClient = TypeMoq.Mock.ofType<OidcAgentClient>();
         if (throwsError)
-            mockOidcAgentClient.setup((_) => _.getToken(TypeMoq.It.isAny(), TypeMoq.It.isAny())).throws(new Error("Mock login failure"));
+            mockOidcAgentClient.setup((_) => _.getToken(TypeMoq.It.isAny())).throws(new Error("Mock login failure"));
         else
-            mockOidcAgentClient.setup((_) => _.getToken(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(async () => this.getFakeAccessToken());
+            mockOidcAgentClient.setup((_) => _.getToken(TypeMoq.It.isAny())).returns(async () => this.getFakeAccessToken());
         return mockOidcAgentClient.object;
     }
 

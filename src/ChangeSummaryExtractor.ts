@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2018 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 
@@ -30,7 +30,7 @@ export class ChangeSummaryExtractor {
 
             Logger.logTrace(QueryAgentConfig.loggingCategory, `   Description: ${changeSummary.changeSet.description}`);
             Logger.logTrace(QueryAgentConfig.loggingCategory, `   Push Date: ${new Date(changeSummary.changeSet.pushDate).toLocaleString()}`);
-            Logger.logTrace(QueryAgentConfig.loggingCategory, `   Author: ${changeSummary.changeSet.author}`);
+            Logger.logTrace(QueryAgentConfig.loggingCategory, `   Author: ${changeSummary.changeSet.userCreated}`);
 
             changeContent.instanceChanges = iModelDb!.withPreparedStatement<any[]>("SELECT ECInstanceId FROM ecchange.change.InstanceChange WHERE Summary.Id=? ORDER BY ECInstanceId", (stmt: ECSqlStatement): any[] => {
                 stmt.bindId(1, changeSummary.id);

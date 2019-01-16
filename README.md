@@ -1,6 +1,6 @@
 # imodel-query-agent
 
-Copyright © 2018 Bentley Systems, Incorporated. All rights reserved.
+Copyright © 2019 Bentley Systems, Incorporated. All rights reserved.
 
 imodel-query-agent is an example of an [agent](https://imodeljs.github.io/iModelJs-docs-output//learning/app/#imodel-agents) that illustrates use of the iModel.js API to listen and query changes made to iModels on the iModelHub. A separate optional [imodel-changeset-test-utility](https://github.com/imodeljs/imodel-changeset-test-utility) can be used to generate sample change sets that can then be consumed by this sample.
 
@@ -15,35 +15,37 @@ More specifically, this sample application demonstrates use of iModel.js API to:
 See http://imodeljs.org for comprehensive documentation on the iModel.js API and the various constructs used in this sample.
 
 ## Development Setup
+
 1. (Optional) Create a sample project using the procedure at [Developer Registration](https://imodeljs.github.io/iModelJs-docs-output/getting-started/#developer-registration).  This step is not needed if you already have a project to test with.
 
-2. (Required) Register your application at [Developer Registration](https://imodeljs.github.io/iModelJs-docs-output/getting-started/#developer-registration). For more information, see the section on [authorization](https://imodeljs.github.io/iModelJs-docs-output/learning/common/accesstoken/).
+1. (Required) Register your application at [Developer Registration](https://imodeljs.github.io/iModelJs-docs-output/getting-started/#developer-registration). For more information, see the section on [authorization](https://imodeljs.github.io/iModelJs-docs-output/learning/common/accesstoken/).
 
-2. Edit [src/QueryAgentConfig.ts](./src/QueryAgentConfig.ts) to set the values you obtained from registration.
+1. Edit [src/QueryAgentConfig.ts](./src/QueryAgentConfig.ts) to set the values you obtained from registration.
 
-3. Install the dependencies with `npm install`
+1. Install the dependencies with `npm install`
 
-4. Build the source with `npm run build`
+1. Build the source with `npm run build`
 
-5. (Optional) Follow the Development Setup process to setup the [imodel-changeset-test-utility](https://github.com/imodeljs/imodel-changeset-test-utility/blob/master/README.md). The utility can be used to generate and push sample change sets to the iModelHub that can then be consumed by this sample.
+1. (Optional) Follow the Development Setup process to setup the [imodel-changeset-test-utility](https://github.com/imodeljs/imodel-changeset-test-utility/blob/master/README.md). The utility can be used to generate and push sample change sets to the iModelHub that can then be consumed by this sample.
 
 ## Run Query Agent
 
 1. Start this sample application with `npm start`. Watch the console for various messages that show the progress:
-  * Register event handlers that listen to Change Sets being posted to the iModelHub.
-  * Register event handlers that listen to Named Versions created on the iModelHub.
-  * Receive notification of a new Change Set posted to the iModelHub.
-  * Receive notification of a new Named Version created on the iModelHub.
-  * Extract Change Summary information from the Change Set.
-  * Dump the contents of the Change Summary as a JSON file to disk.
+    * Register event handlers that listen to Change Sets being posted to the iModelHub.
+    * Register event handlers that listen to Named Versions created on the iModelHub.
+    * Receive notification of a new Change Set posted to the iModelHub.
+    * Receive notification of a new Named Version created on the iModelHub.
+    * Extract Change Summary information from the Change Set.
+    * Dump the contents of the Change Summary as a JSON file to disk.
 
-2. (Optional) Immediately start the imodel-changeset-test-utility to generate and push change sets by following the procedure documented in it's [README](https://github.com/imodeljs/imodel-changeset-test-utility/blob/master/README.md).
+1. (Optional) Immediately start the imodel-changeset-test-utility to generate and push change sets by following the procedure documented in it's [README](https://github.com/imodeljs/imodel-changeset-test-utility/blob/master/README.md).
 
 ## Run automated tests
 
 The sample includes some tests to validate it's behavior - these are useful for internal testing:
-- Use `npm test` to run unit tests
-- Use `npm run test:integration` to run integration tests
+
+* Use `npm test` to run unit tests
+* Use `npm run test:integration` to run integration tests
 
 ## Debugging
 
