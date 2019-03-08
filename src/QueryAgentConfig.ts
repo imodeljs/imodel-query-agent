@@ -31,8 +31,8 @@ export class QueryAgentConfig {
             // developer registration procedure here - https://git.io/fx8YP
             // Note: These can be set in the environment also - e.g., "set imjs_agent_project_name=MyProject"
             // -----------------------------------------------------------------------------------------------------------
-            // imjs_agent_project_name: "Set this to the name of the sample project"
-            // imjs_agent_imodel_name: "Set this to the name of the sample iModel"
+            // imjs_agent_project_name: "Set this to the name of the sample project",
+            // imjs_agent_imodel_name: "Set this to the name of the sample iModel",
 
             // -----------------------------------------------------------------------------------------------------------
             // Other application settings (NOT REQUIRED)

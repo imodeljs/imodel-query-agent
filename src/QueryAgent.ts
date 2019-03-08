@@ -6,11 +6,11 @@
 import { BriefcaseProvider } from "./BriefcaseProvider";
 import { ChangeSummaryExtractor } from "./ChangeSummaryExtractor";
 import { Logger, LogLevel, Guid, ActivityLoggingContext } from "@bentley/bentleyjs-core";
-import { AccessToken, ChangeSetPostPushEvent, NamedVersionCreatedEvent, ConnectClient, IModelHubClient, IModelQuery, AzureFileHandler } from "@bentley/imodeljs-clients";
+import { AccessToken, ChangeSetPostPushEvent, NamedVersionCreatedEvent, ConnectClient, IModelHubClient, IModelQuery } from "@bentley/imodeljs-clients";
 import { ChangeOpCode } from "@bentley/imodeljs-common";
 import { IModelHost, IModelHostConfiguration, IModelDb } from "@bentley/imodeljs-backend";
 import { QueryAgentConfig } from "./QueryAgentConfig";
-import { OidcAgentClient } from "@bentley/imodeljs-clients-backend";
+import { OidcAgentClient, AzureFileHandler } from "@bentley/imodeljs-clients-backend";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -48,7 +48,7 @@ export class QueryAgent {
   }
   private async _login(): Promise<AccessToken> {
     // TODO: remove openid-client.d.ts once imodeljs changes are received
-    Logger.logTrace(QueryAgentConfig.loggingCategory, "Geting JWT access token");
+    Logger.logTrace(QueryAgentConfig.loggingCategory, `Getting JWT access token`);
     const jwt: AccessToken = await this._oidcClient!.getToken(actx);
     Logger.logTrace(QueryAgentConfig.loggingCategory, `Got JWT access token`);
     return jwt;
