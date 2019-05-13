@@ -6,7 +6,7 @@
 import { BriefcaseProvider } from "../BriefcaseProvider";
 import { QueryAgentWebServer } from "../QueryAgentWebServer";
 import { ChangeSummaryExtractor } from "../ChangeSummaryExtractor";
-import { AccessToken, IModelHubClient, EventSubscription, IModelHubEvent, EventHandler, EventSubscriptionHandler, ConnectClient, Project, IModelsHandler, HubIModel} from "@bentley/imodeljs-clients";
+import { AccessToken, IModelHubClient, EventSubscription, IModelHubEvent, EventHandler, EventSubscriptionHandler, ConnectClient, Project, IModelsHandler, HubIModel } from "@bentley/imodeljs-clients";
 import { IModelDb } from "@bentley/imodeljs-backend";
 import * as TypeMoq from "typemoq";
 import * as express from "express";
@@ -59,7 +59,7 @@ export class TestMockObjects {
         const mockConnectClient = TypeMoq.Mock.ofType<ConnectClient>();
         const project = new Project();
         project.wsgId = "FAKE_WSG_ID";
-        mockConnectClient.setup((_) => _.getProject(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(async () => project);
+        mockConnectClient.setup((_) => _.getProject(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(async () => project);
         return mockConnectClient.object;
     }
     public static getMockProcess(): NodeJS.Process {
@@ -112,7 +112,7 @@ export class TestMockObjects {
         hubIModel.wsgId = "FAKE_WSG_ID";
         const hubIModels: HubIModel[] = [hubIModel];
         const mockIModelHandler = TypeMoq.Mock.ofType<IModelsHandler>();
-        mockIModelHandler.setup((_) => _.get(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(async () => hubIModels);
+        mockIModelHandler.setup((_) => _.get(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(async () => hubIModels);
         return mockIModelHandler.object;
     }
     public static getMockEventHandler(): EventHandler {
@@ -125,7 +125,7 @@ export class TestMockObjects {
     }
     public static getMockEventSubscriptionHandler(): EventSubscriptionHandler {
         const mockEventSubscriptionHandler: TypeMoq.IMock<EventSubscriptionHandler> = TypeMoq.Mock.ofType(EventSubscriptionHandler);
-        mockEventSubscriptionHandler.setup((_) => _.create(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(async () => this.getMockEventSubscription());
+        mockEventSubscriptionHandler.setup((_) => _.create(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(async () => this.getMockEventSubscription());
         return mockEventSubscriptionHandler.object;
     }
     public static getMockEventSubscription(): EventSubscription {

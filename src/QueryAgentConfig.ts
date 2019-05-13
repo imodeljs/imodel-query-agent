@@ -59,7 +59,7 @@ export class QueryAgentConfig {
             clientSecret: Config.App.getString("imjs_agent_client_secret"),
             serviceUserEmail: Config.App.getString("imjs_agent_service_user_email"),
             serviceUserPassword: Config.App.getString("imjs_agent_service_user_password"),
-            scope: "openid email profile organization context-registry-service imodelhub imodeljs-backend-2686",
+            scope: "context-registry-service imodelhub imodeljs-backend-2686",
         };
     }
 

@@ -5,8 +5,8 @@
 
 import { BriefcaseProvider } from "./BriefcaseProvider";
 import { ChangeSummaryExtractor } from "./ChangeSummaryExtractor";
-import { Logger, LogLevel, Guid, ActivityLoggingContext } from "@bentley/bentleyjs-core";
-import { AccessToken, ChangeSetPostPushEvent, NamedVersionCreatedEvent, ConnectClient, IModelHubClient, IModelQuery } from "@bentley/imodeljs-clients";
+import { Logger, LogLevel, ClientRequestContext } from "@bentley/bentleyjs-core";
+import { AccessToken, ChangeSetPostPushEvent, NamedVersionCreatedEvent, ConnectClient, IModelHubClient, IModelQuery, AuthorizedClientRequestContext } from "@bentley/imodeljs-clients";
 import { ChangeOpCode } from "@bentley/imodeljs-common";
 import { IModelHost, IModelHostConfiguration, IModelDb } from "@bentley/imodeljs-backend";
 import { QueryAgentConfig } from "./QueryAgentConfig";
@@ -14,7 +14,7 @@ import { OidcAgentClient, AzureFileHandler } from "@bentley/imodeljs-clients-bac
 import * as fs from "fs";
 import * as path from "path";
 
-const actx = new ActivityLoggingContext("");
+const actx = new ClientRequestContext("");
 
 /** Sleep for ms */
 const pause = async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -58,9 +58,9 @@ export class QueryAgent {
     await this._initialize();
     // Subscribe to change set and named version events
     Logger.logTrace(QueryAgentConfig.loggingCategory, "Setting up changeset and named version listeners...");
-    const actCtx = new ActivityLoggingContext(Guid.createValue());
-    const changeSetSubscription = await this._hubClient!.events.subscriptions.create(actCtx, this._accessToken!, this._iModelId!, ["ChangeSetPostPushEvent"]);
-    const deleteChangeSetListener = this._hubClient!.events.createListener(actCtx, async () => this._accessToken!, changeSetSubscription!.wsgId, this._iModelId!,
+    const authCtx = new AuthorizedClientRequestContext(this._accessToken!);
+    const changeSetSubscription = await this._hubClient!.events.subscriptions.create(authCtx, this._iModelId!, ["ChangeSetPostPushEvent"]);
+    const deleteChangeSetListener = this._hubClient!.events.createListener(authCtx, async () => this._accessToken!, changeSetSubscription!.wsgId, this._iModelId!,
       async (receivedEvent: ChangeSetPostPushEvent) => {
         Logger.logTrace(QueryAgentConfig.loggingCategory, `Received notification that change set "${receivedEvent.changeSetId}" was just posted on the Hub`);
         try {
@@ -69,8 +69,8 @@ export class QueryAgent {
           Logger.logError(QueryAgentConfig.loggingCategory, `Unable to extract changeset: ${receivedEvent.changeSetId}, failed with ${error}`);
         }
       });
-    const namedVersionSubscription = await this._hubClient!.events.subscriptions.create(actCtx, this._accessToken!, this._iModelId!, ["VersionEvent"]);
-    const deleteNamedVersionListener = this._hubClient!.events.createListener(actCtx, async () => this._accessToken!, namedVersionSubscription!.wsgId, this._iModelId!,
+    const namedVersionSubscription = await this._hubClient!.events.subscriptions.create(authCtx, this._iModelId!, ["VersionEvent"]);
+    const deleteNamedVersionListener = this._hubClient!.events.createListener(authCtx, async () => this._accessToken!, namedVersionSubscription!.wsgId, this._iModelId!,
       async (receivedEvent: NamedVersionCreatedEvent) => {
         Logger.logTrace(QueryAgentConfig.loggingCategory, `Received notification that named version "${receivedEvent.versionName}" was just created on the Hub`);
       });
@@ -80,7 +80,7 @@ export class QueryAgent {
     await pause(listenFor);
 
     if (this._iModelDb)
-      await this._iModelDb.close(actCtx, this._accessToken!);
+      await this._iModelDb.close(authCtx);
     // Unsubscribe from events (if necessary)
     if (deleteChangeSetListener)
       deleteChangeSetListener();
@@ -97,13 +97,14 @@ export class QueryAgent {
         this._accessToken = await this._login();
         Logger.logTrace(QueryAgentConfig.loggingCategory, `Attempting to find Ids for iModel and Project`);
         let projectId, iModelId: string | undefined;
+        const authCtx = new AuthorizedClientRequestContext(this._accessToken!);
         try {
-          projectId = (await this._connectClient.getProject(actx, this._accessToken, {
+          projectId = (await this._connectClient.getProject(authCtx, {
             $select: "*",
             $filter: "Name+eq+'" + QueryAgentConfig.projectName + "'",
           }))!.wsgId;
           Logger.logTrace(QueryAgentConfig.loggingCategory, `Project ${QueryAgentConfig.projectName} has id: ${projectId}`);
-          const iModels = await this._hubClient.iModels.get(actx, this._accessToken, projectId, new IModelQuery().byName(QueryAgentConfig.iModelName));
+          const iModels = await this._hubClient.iModels.get(authCtx, projectId, new IModelQuery().byName(QueryAgentConfig.iModelName));
           if (iModels.length === 1)
             iModelId = iModels[0].wsgId;
         } catch (error) {

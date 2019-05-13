@@ -4,16 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { QueryAgentConfig } from "./QueryAgentConfig";
-import { Logger, DbResult, assert, Id64String, ActivityLoggingContext, Guid } from "@bentley/bentleyjs-core";
+import { Logger, DbResult, assert, Id64String } from "@bentley/bentleyjs-core";
 import { ChangedValueState, ChangeOpCode } from "@bentley/imodeljs-common";
 import { ChangeSummaryManager, ECSqlStatement, ChangeSummary, IModelDb } from "@bentley/imodeljs-backend";
-import { AccessToken } from "@bentley/imodeljs-clients";
+import { AccessToken, AuthorizedClientRequestContext } from "@bentley/imodeljs-clients";
 export class ChangeSummaryExtractor {
     public async extractChangeSummary(accessToken: AccessToken, iModelDb: IModelDb, changeSetId: string) {
         try {
-            const actLogCtx = new ActivityLoggingContext(Guid.createValue());
+            const authLogCtx = new AuthorizedClientRequestContext(accessToken);
             // Extract summary information about the current version of the briefcase/iModel into the change cache
-            const changeSummaryIds: Id64String[] = await ChangeSummaryManager.extractChangeSummaries(actLogCtx, accessToken!, iModelDb!, { currentVersionOnly: true });
+            const changeSummaryIds: Id64String[] = await ChangeSummaryManager.extractChangeSummaries(authLogCtx, iModelDb!, { currentVersionOnly: true });
             Logger.logTrace(QueryAgentConfig.loggingCategory, `Extracted summary information from change set "${changeSetId}"`);
 
             // Attach a change cache file to the iModel to enable querying the change summary
