@@ -22,8 +22,6 @@ export class QueryAgentConfig {
             // -----------------------------------------------------------------------------------------------------------
             // imjs_agent_client_id: "Set this to client id",
             // imjs_agent_client_secret: "Set this to the client secret",
-            // imjs_agent_service_user_email: "Set this to the email of the service user",
-            // imjs_agent_service_user_password: "Set this to the password of the service user"
 
             // -----------------------------------------------------------------------------------------------------------
             // Test project and iModel (REQUIRED)
@@ -57,9 +55,7 @@ export class QueryAgentConfig {
         return {
             clientId: Config.App.getString("imjs_agent_client_id"),
             clientSecret: Config.App.getString("imjs_agent_client_secret"),
-            serviceUserEmail: Config.App.getString("imjs_agent_service_user_email"),
-            serviceUserPassword: Config.App.getString("imjs_agent_service_user_password"),
-            scope: "context-registry-service imodelhub imodeljs-backend-2686",
+            scope: "urlps-third-party context-registry-service imodelhub",
         };
     }
 

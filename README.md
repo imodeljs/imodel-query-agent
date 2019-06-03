@@ -14,11 +14,17 @@ More specifically, this sample application demonstrates use of iModel.js API to:
 
 See http://imodeljs.org for comprehensive documentation on the iModel.js API and the various constructs used in this sample.
 
+## Important note about registrations using iModel.js v0.191.0 and prior
+
+**The authorization method of agent clients has been changed in versions >=0.192.0. Therefore all registrations using agent clients created before 0.192.0 have been invalidated. To continue using your app with versions >=0.192.0 please create a new agent registration [here](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/). (i.e. You will need a client_id that starts with service-xxxxxx if using iModel.js versions >=0.192.0.) The new registration process is easy, fully automated, and can be completed in minutes.**
+
 ## Development Setup
 
-1. (Optional) Create a sample project using the procedure at [Developer Registration](https://imodeljs.github.io/iModelJs-docs-output/getting-started/#developer-registration).  This step is not needed if you already have a project to test with.
+1. (Optional) Create a sample project using the procedure at [Developer Registration](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/?tab=1).  This step is not needed if you already have a project to test with.
 
-1. (Required) Register your application at [Developer Registration](https://imodeljs.github.io/iModelJs-docs-output/getting-started/#developer-registration). For more information, see the section on [authorization](https://imodeljs.github.io/iModelJs-docs-output/learning/common/accesstoken/).
+1. (Required) Register your application at [Developer Registration](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/?tab=0). For more information, see the section on [authorization](https://imodeljs.github.io/iModelJs-docs-output/learning/common/accesstoken/).
+
+1. (Required) Add your agent's identity email as a project participant on your project. Edit your [sample project](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/?tab=1) and add the client_id@apps.imsoidc.bentley.com as a project particpant. 
 
 1. Edit [src/QueryAgentConfig.ts](./src/QueryAgentConfig.ts) to set the values you obtained from registration.
 
