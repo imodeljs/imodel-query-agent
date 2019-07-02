@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@bentley/build-tools": "1.1.0",
-    "@bentley/imodel-changeset-test-utility": "0.0.54",
+    "@bentley/imodel-changeset-test-utility": "0.0.55",
     "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.4",
     "@types/express": "^4.16.0",
