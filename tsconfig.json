@@ -5,6 +5,7 @@
     "module": "commonjs",
     "baseUrl": "./node_modules/",
     "outDir": "./lib",
+    "rootDir": "./src",
     "skipLibCheck": true
   },
   "include": [
