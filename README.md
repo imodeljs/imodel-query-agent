@@ -44,11 +44,11 @@ See http://imodeljs.org for comprehensive documentation on the iModel.js API and
     * Extract Change Summary information from the Change Set.
     * Dump the contents of the Change Summary as a JSON file to disk.
 
-1. (Optional) Immediately start the imodel-changeset-test-utility to generate and push change sets by following the procedure documented in it's [README](https://github.com/imodeljs/imodel-changeset-test-utility/blob/master/README.md).
+1. (Optional) Immediately start the imodel-changeset-test-utility to generate and push change sets by following the procedure documented in its [README](https://github.com/imodeljs/imodel-changeset-test-utility/blob/master/README.md).
 
 ## Run automated tests
 
-The sample includes some tests to validate it's behavior - these are useful for internal testing:
+The sample includes some tests to validate its behavior - these are useful for internal testing:
 
 * Use `npm test` to run unit tests
 * Use `npm run test:integration` to run integration tests
